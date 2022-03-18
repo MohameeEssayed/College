@@ -1,0 +1,201 @@
+//محمد السيد عبد المنعم
+//سكشن 3
+//دكتور أحمد غزية
+//Course:SWE
+package Assignment1;
+import java.util.Vector;
+import java.util.Enumeration;
+
+//___________________________________________________________________
+// Course class
+
+class Course {
+private String title;
+private Vector courseRecords;
+Course(){
+    courseRecords=new Vector();
+}
+public String getTitle(){
+    return title;
+}
+public void setTitle( String t){
+    title=t;
+}
+public void addCourseRecord(CourseRecord cr) {
+    courseRecords.addElement(cr);
+}
+public Enumeration getCourseRecords() {
+    return courseRecords.elements();
+}
+
+/* Excersize for course class: PrintCourseStudent. */
+
+public void PrintCourseStudent(){
+    String NameOfStudent;
+    Enumeration en = courseRecords.elements();
+    System.out.println("Course has "+courseRecords.size()+" Students");
+    while(en.hasMoreElements()){
+        CourseRecord cr = (CourseRecord) en.nextElement();
+         NameOfStudent = cr.getStudent().getName();
+         System.out.println(NameOfStudent);
+    }
+}
+
+/* Excersize for course class: PrintBestStudent. */
+
+ public void printBestStudent() throws NotYetSetException {
+    double best_average = 0.0;
+    String student_name = null ;
+    Enumeration en = courseRecords.elements();
+    while (en.hasMoreElements()) {
+        CourseRecord cr = (CourseRecord) en.nextElement();
+        if (best_average < cr.average()) {
+            best_average = cr.average();
+            student_name = cr.getStudent().getName();
+        }
+        }
+    System.out.println("Best Student is " + student_name);
+}
+ 
+/* Excersize for course class: PrintFinalExamStudents. */
+ 
+ public void printFinalExamStudents() throws NotYetSetException {
+    double best_average = 0.0;
+    double average = 0.0;
+    String student_name = null ;
+    Enumeration en = courseRecords.elements();
+    System.out.println("Students that can practice in final exam");
+    while (en.hasMoreElements()) {
+        CourseRecord cr = (CourseRecord) en.nextElement();
+        if (cr.canTakeFinalExam()) {
+            System.out.println(cr.getStudent().getName());
+        }
+    }
+}
+}
+
+//___________________________________________________________________
+// Recorded courses of our courses
+
+class CourseRecord {
+    private Student student;
+    private Vector assignments;
+    CourseRecord() {
+        assignments=new Vector();
+    }
+    public Student getStudent() {
+        return student;
+    }
+    public void setStudent(Student s) {
+        student = s;
+    }
+    public void addAssignment(Assignment a) {
+        assignments.addElement(a);
+    }
+    public Enumeration getAssignments() {
+        return assignments.elements();
+    }
+    
+/* Exercises for the CourseRecord Class: Average */
+    
+    public double average() throws NotYetSetException {
+        double average = 0.0 ;
+        double marks = 0.0 ;
+        int assignment_count = 0 ;
+        Enumeration en = assignments.elements();
+        while (en.hasMoreElements()) {
+            Assignment assignment = (Assignment) en.nextElement();
+            if (assignment.getMark() != -1) {
+                assignment_count ++;
+                marks += assignment.getMark();
+                average = marks/assignment_count;
+            }
+        }
+        return average;
+    }
+    
+/* Exercises for the CourseRecord Class: canTakeFinalExam */
+    
+    public boolean canTakeFinalExam() throws NotYetSetException {
+        int assignment_count = 0 ;
+        Enumeration en = assignments.elements();
+        while (en.hasMoreElements()) {
+            Assignment assignment = (Assignment) en.nextElement();
+            if (assignment.getMark() != -1) {
+                assignment_count++;
+            }
+        }
+        return assignment_count>=3 ;
+    }
+}
+
+//___________________________________________________________________
+// Each student record at many course
+
+class Student {
+private String name;
+Student() {}
+public String getName() { return name; }
+public void setName( String n) { name=n; }}
+
+//___________________________________________________________________
+// If course record dosen't exist
+
+class NotYetSetException extends Exception {
+public NotYetSetException(String s) { super(s); }}
+
+//___________________________________________________________________
+// Each course has many assigments
+
+class Assignment {
+private double mark=-1;
+public double getMark() throws NotYetSetException {
+if (mark==-1) {
+throw new
+NotYetSetException("Mark is not yet set");
+}
+return mark;
+}
+public void setMark( int m) {
+    mark=m;
+} 
+}
+
+//___________________________________________________________________
+
+public class Assignment1 {
+    public static void main(String[] args) throws NotYetSetException {
+         Student std1 = new Student();
+        std1.setName("Mostafa");
+        Student std2 = new Student();
+        std2.setName("Ashraf");
+// Course context
+        Course c1 = new Course();
+        c1.setTitle("AI");
+        Course c2 = new Course();
+        c2.setTitle("SWE");
+// Assignment context
+        Assignment as1 = new Assignment();
+        as1.setMark(15);
+        Assignment as2 = new Assignment();
+        as2.setMark(10);
+// CourseRecord context
+        CourseRecord cr1 = new CourseRecord();
+        cr1.setStudent(std1);
+        cr1.addAssignment(as1);
+        cr1.addAssignment(as2);
+        cr1.addAssignment(as1);
+        CourseRecord cr2 = new CourseRecord();
+        cr2.setStudent(std2);
+
+        c1.addCourseRecord(cr1);
+        c1.addCourseRecord(cr2);
+/* Output testing */
+        System.out.println(cr1.average());
+        System.out.println((cr1.canTakeFinalExam())?"student can take exam " : "student can not take exam");
+        c1.PrintCourseStudent();
+        c1.PrintCourseStudent();
+        c1.printFinalExamStudents();
+
+    }
+}
